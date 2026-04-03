@@ -1,0 +1,51 @@
+# About VBA Code
+
+This VBA script automates the consolidation of cleaned data from the Processed_Data folder into a single dataset. 
+It removes existing data from the target sheet to prevent duplication and ensure accuracy.
+The script enhances the dataset by adding calculated columns such as Total_Amount, Discount_Amount, and Product_Amount. 
+It also automates formula application across all records, improving efficiency, consistency, and reducing manual intervention.
+
+Sub consolidated()
+
+    Dim ws As Worksheet
+    Dim wbSource As Workbook
+    Dim wsSource As Worksheet
+    Dim lastRow As Long
+    Dim prc_file_path As String, prc_file As String
+    Dim lastRowDest As Long
+    Dim lastRowSource As Long
+
+    Set ws = ThisWorkbook.Sheets("Data")
+
+    ' Clear old data
+    ws.Range("A:X").Clear
+
+    prc_file_path = "C:\Users\Suman_5728\Desktop\Suman_Project\Pipeline_Data\Processing"
+    prc_file = Dir(prc_file_path & "\*.xlsx")
+
+    Do While prc_file <> ""
+        
+        Set wbSource = Workbooks.Open(prc_file_path & "\" & prc_file)
+        Set wsSource = wbSource.Sheets(1)
+        
+        lastRowSource = wsSource.Cells(wsSource.Rows.Count, "X").End(xlUp).Row
+        lastRowDest = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row + 1
+        
+        If lastRowDest = 2 Then
+            wsSource.Range("A1:X" & lastRowSource).Copy ws.Range("A1")
+        Else
+            wsSource.Range("A2:X" & lastRowSource).Copy ws.Range("A" & lastRowDest)
+        End If
+        
+        wbSource.Close False
+        
+        prc_file = Dir
+        
+    Loop
+
+    MsgBox "Data Consolidated Successfully!"
+
+    lastRow = ws.Cells(ws.Rows.Count, "X").End(xlUp).Row
+    ws.Range("Y2:AA2").AutoFill Destination:=ws.Range("Y2:AA" & lastRow)
+
+End Sub
