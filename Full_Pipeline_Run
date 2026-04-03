@@ -1,0 +1,40 @@
+#Here we will call Python Code, Row_data_clean, business analysis so that we can run in one click in VBA Code
+#Consolidate file and analysis
+
+Sub Run_Full_Automation()
+
+    Dim pythonPath As String
+    Dim cleanScript As String
+    Dim analysisScript As String
+    
+    Application.ScreenUpdating = False
+    Application.DisplayAlerts = False
+    Application.EnableEvents = False
+    Application.AskToUpdateLinks = False
+    
+ 
+    pythonPath = "C:\Program Files\Python314\python.exe"
+    
+    cleanScript = "C:\Users\Suman_5728\Desktop\Suman_Project\Pipeline_Data\Row_data\clean_pipeline.py"
+    analysisScript = "C:\Users\Suman_5728\Desktop\Suman_Project\Pipeline_Data\Analysis\analysis_report.py"
+    
+    Shell """" & pythonPath & """ """ & cleanScript & """", vbNormalFocus
+    
+    Application.Wait Now + TimeValue("00:00:05")
+    
+    Call consolidated
+    
+    Application.Wait Now + TimeValue("00:00:05")
+    
+    
+    Shell """" & pythonPath & """ """ & analysisScript & """", vbNormalFocus
+
+    MsgBox "Full Automation Completed!"
+    
+CleanExit:
+
+    Application.ScreenUpdating = True
+    Application.DisplayAlerts = True
+    Application.EnableEvents = True
+
+End Sub
